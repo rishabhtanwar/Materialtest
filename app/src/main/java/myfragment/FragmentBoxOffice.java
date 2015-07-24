@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import static extra.UrlEndPoints.URL_BOX_OFFICE;
@@ -18,9 +19,15 @@ import static extra.UrlEndPoints.URL_PARA_API_KEY;
 import static extra.Keys.EndPointBoxOffice.*;
 import static extra.UrlEndPoints.URL_POSTER;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -37,8 +44,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import adapters.AdapterBoxOffice;
+import extra.MovieSorter;
 import extra.Movies;
 import extra.MyApplication;
+import extra.SortListner;
 import networks.VolleySingleton;
 
 /**
@@ -46,7 +55,7 @@ import networks.VolleySingleton;
  * Use the {@link FragmentBoxOffice#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentBoxOffice extends Fragment {
+public class FragmentBoxOffice extends Fragment implements SortListner {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -57,12 +66,14 @@ public class FragmentBoxOffice extends Fragment {
     private String mParam1;
     private String mParam2;
     private VolleySingleton volleySingleton;
+    private MovieSorter movieSort =new MovieSorter();
     private ImageLoader imageLoader;
     private RequestQueue requestQueue;
     private ArrayList<Movies> listMovies = new ArrayList<>();
     private AdapterBoxOffice adapterBoxOffice;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private RecyclerView listMovieHits;
+    private TextView textVolleyError;
 
 
     /**
@@ -80,7 +91,6 @@ public class FragmentBoxOffice extends Fragment {
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
-        Log.e("myApp", "no image");
         return fragment;
 
     }
@@ -124,15 +134,39 @@ public class FragmentBoxOffice extends Fragment {
                         listMovies = parseJSONResponse(response);
 
                         adapterBoxOffice.setMovieList(listMovies);
+                        textVolleyError.setVisibility(View.GONE);
 
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
+                handleVolleyError(error);
+
             }
         });
         requestQueue.add(request);
+    }
+
+    private void handleVolleyError(VolleyError error) {
+        textVolleyError.setVisibility(View.VISIBLE);
+        if (error instanceof TimeoutError || error instanceof NoConnectionError){
+            textVolleyError.setText("Oops !! Your Connection Timed out");
+
+        }else  if (error instanceof AuthFailureError){
+            textVolleyError.setText("Oops !! TMDB doesn't recognize you");
+
+        }else if (error instanceof ServerError){
+            textVolleyError.setText("Oops !! TMDB doesn't recognize you");
+
+        }else if (error instanceof NetworkError){
+            textVolleyError.setText("Oops !! server not found");
+
+        }else if (error instanceof ParseError){
+            textVolleyError.setText("Oops !! Data recieved unreachable");
+        }
+
+
     }
 
     private ArrayList<Movies> parseJSONResponse(JSONObject response) {
@@ -149,49 +183,60 @@ public class FragmentBoxOffice extends Fragment {
 
                 for (int i = 0; i < arrayMovies.length(); i++) {
 
+                    long id = -1;
+
+                    String title = "NA";
+
+                    String releaseDate = "NA";
+
+                    int audienceScore = -1;
+
+                    String overview = "NA";
+
+                    String urlPoster = "NA";
+
                     JSONObject currentMovies = arrayMovies.getJSONObject(i);
 
                     //get the id of the movies
 
-                    long id = currentMovies.getLong(KEY_ID);
+                    if (currentMovies.has(KEY_ID) && !currentMovies.isNull(KEY_ID)) {
+
+                        id = currentMovies.getLong(KEY_ID);
+                    }
 
                     //get the title of the movies
 
-                    String title = currentMovies.getString(KEY_TITLE);
+                    if (currentMovies.has(KEY_TITLE) && !currentMovies.isNull(KEY_TITLE)) {
+
+                        title = currentMovies.getString(KEY_TITLE);
+
+                    }
 
                     //get the release date of the movies
 
-                    String releaseDate = null;
-
-                    if (currentMovies.has(KEY_RELEASE_DATE)) {
+                    if (currentMovies.has(KEY_RELEASE_DATE) && !currentMovies.isNull(KEY_RELEASE_DATE)) {
 
                         releaseDate = currentMovies.getString(KEY_RELEASE_DATE);
-                    } else {
-
-                        releaseDate = "NA";
-
-
                     }
 
                     //get the ratings of the movies
 
-                    int audienceScore = -1;
-
-                    if (currentMovies.has(KEY_RATINGS)) {
+                    if (currentMovies.has(KEY_RATINGS) && !currentMovies.isNull(KEY_RATINGS)) {
 
                         audienceScore = currentMovies.getInt(KEY_RATINGS);
                     }
 
                     //get the overview of movies
 
-                    String overview = currentMovies.getString(KEY_OVERVIEW);
+                    if (currentMovies.has(KEY_OVERVIEW) && !currentMovies.isNull(KEY_OVERVIEW)) {
+
+                        overview = currentMovies.getString(KEY_OVERVIEW);
+
+                    }
 
                     //get the posters of movies
 
-
-                    String urlPoster = null;
-
-                    if (currentMovies.has(KEY_POSTER)) {
+                    if (currentMovies.has(KEY_POSTER) && !currentMovies.isNull(KEY_POSTER)) {
 
                         urlPoster = URL_POSTER + currentMovies.getString(KEY_POSTER);
                     }
@@ -202,7 +247,12 @@ public class FragmentBoxOffice extends Fragment {
 
                     movie.setTitle(title);
 
-                    Date date = dateFormat.parse(releaseDate);
+                   Date date=null;
+                    try {
+                       date= dateFormat.parse(releaseDate);
+                    }catch (ParseException e){
+
+                    }
 
                     movie.setReleaseDate(date);
 
@@ -212,8 +262,11 @@ public class FragmentBoxOffice extends Fragment {
 
                     movie.setOverview(overview);
 
+                    if (id!=-1 && !title.equals("NA")){
 
-                    listMovies.add(movie);
+                        listMovies.add(movie);
+                    }
+
 
                 }
 
@@ -221,9 +274,8 @@ public class FragmentBoxOffice extends Fragment {
             } catch (JSONException e) {
 
                 e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
             }
+
         }
         return listMovies;
 
@@ -236,6 +288,7 @@ public class FragmentBoxOffice extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_box_office, container, false);
+        textVolleyError = (TextView) view.findViewById(R.id.textVolleyError);
         listMovieHits = (RecyclerView) view.findViewById(R.id.movieHits);
         listMovieHits.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapterBoxOffice = new AdapterBoxOffice(getActivity());
@@ -246,4 +299,23 @@ public class FragmentBoxOffice extends Fragment {
     }
 
 
+    @Override
+    public void onSortByName() {
+        movieSort.sortMovieByName(listMovies);
+        adapterBoxOffice.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSortByDate() {
+        movieSort.sortMovieByDate(listMovies);
+        adapterBoxOffice.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onSortByRating() {
+        movieSort.sortMovieByRating(listMovies);
+        adapterBoxOffice.notifyDataSetChanged();
+
+    }
 }

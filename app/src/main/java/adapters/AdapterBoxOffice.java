@@ -14,7 +14,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.example.materialtest.R;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import extra.Keys;
 import extra.Movies;
@@ -31,8 +34,9 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
 
     private VolleySingleton volleySingleton;
 
-    final String TAG = this.getClass().getSimpleName();
     private ImageLoader imageLoader;
+
+    private DateFormat dateformatter=new SimpleDateFormat("yyyy-MM-dd");
 
     public AdapterBoxOffice(Context context) {
 
@@ -49,7 +53,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
 
         this.listMovies = listMovies;
         notifyDataSetChanged();
-//        notifyItemRangeChanged(0,listMovies.size());
+
     }
 
     @Override
@@ -68,16 +72,39 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
 
         holder.movieTitle.setText(currentMovies.getTitle());
 
-        holder.movieReleaseDate.setText(currentMovies.getReleaseDate().toString());
+        Date movieReleaseDate=currentMovies.getReleaseDate();
+        if (movieReleaseDate!=null){
 
-        holder.movieAudienceScore.setRating(currentMovies.getAudienceScore() / 2.0f);
+            String formatedDate=dateformatter.format(movieReleaseDate);
+            holder.movieReleaseDate.setText(formatedDate);
+
+        }else {
+
+            holder.movieReleaseDate.setText("NA");
+
+        }
+
+        int audienceScore=currentMovies.getAudienceScore();
+
+        if (audienceScore==-1){
+
+            holder.movieAudienceScore.setRating(0.0F);
+            holder.movieAudienceScore.setAlpha(0.5F);
+
+
+        }else {
+
+            holder.movieAudienceScore.setRating(audienceScore/2.0F);
+            holder.movieAudienceScore.setAlpha(1.0F);
+
+
+        }
+
 
         final String urlPoster = currentMovies.getUrlPOster();
 
-        Log.e(TAG, urlPoster + "dknsdl");
 
-
-        if (urlPoster != null) {
+        if (!urlPoster.equals("NA")) {
 
 
             imageLoader.get(urlPoster, new ImageLoader.ImageListener() {
