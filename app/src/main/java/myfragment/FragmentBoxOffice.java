@@ -67,7 +67,6 @@ public class FragmentBoxOffice extends Fragment implements SortListner {
     private String mParam2;
     private VolleySingleton volleySingleton;
     private MovieSorter movieSort =new MovieSorter();
-    private ImageLoader imageLoader;
     private RequestQueue requestQueue;
     private ArrayList<Movies> listMovies = new ArrayList<>();
     private AdapterBoxOffice adapterBoxOffice;

@@ -7,9 +7,9 @@ public class UrlEndPoints {
 
     public static final String URL_BOX_OFFICE="http://api.themoviedb.org/3/movie/now_playing";
 
-    public static final String URL_CHAR_QUESTION="?";
+    public static final String URL_UPCOMING="http://api.themoviedb.org/3/movie/upcoming";
 
-    public static final String URL_CHAR_APPRENSAND="&";
+    public static final String URL_CHAR_QUESTION="?";
 
     public static final String URL_PARA_API_KEY="api_key=";
 
