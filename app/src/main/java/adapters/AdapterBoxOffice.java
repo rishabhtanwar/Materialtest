@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import extra.Animation;
 import extra.Keys;
 import extra.Movies;
 import networks.VolleySingleton;
@@ -37,6 +38,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
     private ImageLoader imageLoader;
 
     private DateFormat dateformatter=new SimpleDateFormat("yyyy-MM-dd");
+    private int priviousPosition=0;
 
     public AdapterBoxOffice(Context context) {
 
@@ -99,6 +101,7 @@ public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.View
 
 
         }
+       Animation.animate(holder);
 
 
         final String urlPoster = currentMovies.getUrlPOster();
