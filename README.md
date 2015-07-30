@@ -13,3 +13,5 @@ show the review of upcoming and now playing movies
  RecyclerView
  
  Material Design Tabs With Icons
+ 
+ ![alt tag](https://github.com/rishabhtanwar/Materialtest/blob/master/2015_07_27_16_15_20.gif)
