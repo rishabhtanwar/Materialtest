@@ -92,6 +92,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setFAB();
 
     }
+    public void onDrawerItemClicked(int index){
+
+        viewPager.setCurrentItem(index);
+
+    }
 
     private void setFAB() {
 
@@ -214,7 +219,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private class ViewpagerAdapter extends FragmentStatePagerAdapter {
-        int[] icons = {R.drawable.search, R.drawable.heart, R.drawable.home};
+        int[] icons = {R.drawable.ic_action_search_orange, R.drawable.ic_action_trending_orange, R.drawable.ic_action_upcoming_orange};
 
         public ViewpagerAdapter(FragmentManager fm) {
             super(fm);
