@@ -76,7 +76,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
 
                 mDrawerlayout.closeDrawer(GravityCompat.START);
 
-                ((MainActivity)getActivity()).onDrawerItemClicked(position);
+                ((MainActivity)getActivity()).onDrawerItemClicked(position-1);
 
             }
 

@@ -5,23 +5,9 @@
     android:background="#DADADA"
     tools:context="com.example.materialtest.NavigationDrawerFragment">
 
-    <LinearLayout
-        android:id="@+id/container_Drawer_images"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ff8f00">
-
-        <ImageView
-            android:layout_width="280dp"
-            android:layout_height="140dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="@dimen/margin_drawer_top"
-            android:src="@drawable/ic_abstract" />
-    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/Drawerlist"
-        android:layout_below="@id/container_Drawer_images"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
