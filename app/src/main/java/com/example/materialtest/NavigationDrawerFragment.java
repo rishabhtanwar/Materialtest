@@ -220,6 +220,11 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
 
         }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean b) {
+
+        }
     }
 
     public static interface ClickListner{

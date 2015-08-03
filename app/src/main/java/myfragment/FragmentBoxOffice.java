@@ -79,7 +79,6 @@ public class FragmentBoxOffice extends Fragment implements SortListner {
     int firstVisibleItem, visibleItemCount, totalItemCount;
 
 
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -298,10 +297,14 @@ public class FragmentBoxOffice extends Fragment implements SortListner {
         final LinearLayoutManager mlayoutManager;
         mlayoutManager=new LinearLayoutManager(getActivity());
         listMovieHits.setLayoutManager(mlayoutManager);
-        listMovieHits.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        adapterBoxOffice = new AdapterBoxOffice(getActivity());
+        listMovieHits.setAdapter(adapterBoxOffice);
+        sendJsonRequest();
+        listMovieHits.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+
                 visibleItemCount = listMovieHits.getChildCount();
                 totalItemCount = mlayoutManager.getItemCount();
                 firstVisibleItem = mlayoutManager.findFirstVisibleItemPosition();
@@ -322,12 +325,8 @@ public class FragmentBoxOffice extends Fragment implements SortListner {
 
                     loading = true;
                 }
-
             }
         });
-        adapterBoxOffice = new AdapterBoxOffice(getActivity());
-        listMovieHits.setAdapter(adapterBoxOffice);
-        sendJsonRequest();
 
         return view;
 

@@ -44,24 +44,6 @@ public  class MyFragment extends Fragment {
 
         }
 
-        RequestQueue requestQueue= VolleySingleton.getInstance().getRequestQueue();
-        StringRequest request=new StringRequest(Request.Method.GET, "http://php.net/", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-                Toast.makeText(getActivity(),"RESPONSE" +response,Toast.LENGTH_LONG).show();
-
-            }
-        } ,new Response.ErrorListener(){
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                Toast.makeText(getActivity(),"ERROR"+error.getMessage(),Toast.LENGTH_SHORT).show();
-
-            }
-        });
-        requestQueue.add(request);
         return layout;
     }
 
