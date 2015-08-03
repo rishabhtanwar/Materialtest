@@ -73,6 +73,11 @@ public class FragmentBoxOffice extends Fragment implements SortListner {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private RecyclerView listMovieHits;
     private TextView textVolleyError;
+    private int previousTotal = 0;
+    private boolean loading = true;
+    private int visibleThreshold = 5;
+    int firstVisibleItem, visibleItemCount, totalItemCount;
+
 
 
     /**
@@ -282,6 +287,7 @@ public class FragmentBoxOffice extends Fragment implements SortListner {
     }
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -289,10 +295,40 @@ public class FragmentBoxOffice extends Fragment implements SortListner {
         View view = inflater.inflate(R.layout.fragment_box_office, container, false);
         textVolleyError = (TextView) view.findViewById(R.id.textVolleyError);
         listMovieHits = (RecyclerView) view.findViewById(R.id.movieHits);
-        listMovieHits.setLayoutManager(new LinearLayoutManager(getActivity()));
+        final LinearLayoutManager mlayoutManager;
+        mlayoutManager=new LinearLayoutManager(getActivity());
+        listMovieHits.setLayoutManager(mlayoutManager);
+        listMovieHits.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                visibleItemCount = listMovieHits.getChildCount();
+                totalItemCount = mlayoutManager.getItemCount();
+                firstVisibleItem = mlayoutManager.findFirstVisibleItemPosition();
+
+                if (loading) {
+                    if (totalItemCount > previousTotal) {
+                        loading = false;
+                        previousTotal = totalItemCount;
+                    }
+                }
+                if (!loading && (totalItemCount - visibleItemCount)
+                        <= (firstVisibleItem + visibleThreshold)) {
+                    // End has been reached
+
+                    Log.i("...", "end called");
+
+                    // Do something
+
+                    loading = true;
+                }
+
+            }
+        });
         adapterBoxOffice = new AdapterBoxOffice(getActivity());
         listMovieHits.setAdapter(adapterBoxOffice);
         sendJsonRequest();
+
         return view;
 
     }

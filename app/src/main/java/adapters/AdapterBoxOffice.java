@@ -27,7 +27,7 @@ import networks.VolleySingleton;
 /**
  * Created by nishant on 8/7/15.
  */
-public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.ViewHolderBoxOffice> {
+public class AdapterBoxOffice extends RecyclerView.Adapter<AdapterBoxOffice.ViewHolderBoxOffice>  {
 
     private ArrayList<Movies> listMovies = new ArrayList<>();
 
