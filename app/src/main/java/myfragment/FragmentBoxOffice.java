@@ -13,8 +13,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static extra.UrlEndPoints.URL_AMPR;
 import static extra.UrlEndPoints.URL_BOX_OFFICE;
 import static extra.UrlEndPoints.URL_CHAR_QUESTION;
+import static extra.UrlEndPoints.URL_PAGE;
 import static extra.UrlEndPoints.URL_PARA_API_KEY;
 import static extra.Keys.EndPointBoxOffice.*;
 import static extra.UrlEndPoints.URL_POSTER;
@@ -42,6 +44,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import adapters.AdapterBoxOffice;
 import extra.MovieSorter;
@@ -73,10 +76,7 @@ public class FragmentBoxOffice extends Fragment implements SortListner {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private RecyclerView listMovieHits;
     private TextView textVolleyError;
-    private int previousTotal = 0;
-    private boolean loading = true;
-    private int visibleThreshold = 5;
-    int firstVisibleItem, visibleItemCount, totalItemCount;
+    private static int i=1;
 
 
     /**
@@ -98,11 +98,18 @@ public class FragmentBoxOffice extends Fragment implements SortListner {
 
     }
 
-    public static String getRequestUrl() {
-        return URL_BOX_OFFICE
+
+        public static String getRequestUrl () {
+
+
+
+        return  URL_BOX_OFFICE
                 + URL_CHAR_QUESTION
-                + URL_PARA_API_KEY + MyApplication.API_KEY;
+                + URL_PARA_API_KEY + MyApplication.API_KEY
+                +URL_AMPR
+                +URL_PAGE+i;
     }
+
 
     public FragmentBoxOffice() {
         // Required empty public constructor
@@ -124,31 +131,32 @@ public class FragmentBoxOffice extends Fragment implements SortListner {
         sendJsonRequest();
     }
 
+
     public void sendJsonRequest() {
 
-
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
-                getRequestUrl(),
-                null + "  ",
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
+                    getRequestUrl(),
+                    null + "  ",
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
 
-                        listMovies = parseJSONResponse(response);
+                            listMovies = parseJSONResponse(response);
 
-                        adapterBoxOffice.setMovieList(listMovies);
-                        textVolleyError.setVisibility(View.GONE);
+                            adapterBoxOffice.setMovieList(listMovies);
+                            textVolleyError.setVisibility(View.GONE);
 
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
 
-                handleVolleyError(error);
+                    handleVolleyError(error);
 
-            }
-        });
-        requestQueue.add(request);
+                }
+            });
+            requestQueue.add(request);
+
     }
 
     private void handleVolleyError(VolleyError error) {
@@ -300,34 +308,6 @@ public class FragmentBoxOffice extends Fragment implements SortListner {
         adapterBoxOffice = new AdapterBoxOffice(getActivity());
         listMovieHits.setAdapter(adapterBoxOffice);
         sendJsonRequest();
-        listMovieHits.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                visibleItemCount = listMovieHits.getChildCount();
-                totalItemCount = mlayoutManager.getItemCount();
-                firstVisibleItem = mlayoutManager.findFirstVisibleItemPosition();
-
-                if (loading) {
-                    if (totalItemCount > previousTotal) {
-                        loading = false;
-                        previousTotal = totalItemCount;
-                    }
-                }
-                if (!loading && (totalItemCount - visibleItemCount)
-                        <= (firstVisibleItem + visibleThreshold)) {
-                    // End has been reached
-
-                    Log.i("...", "end called");
-
-                    // Do something
-
-                    loading = true;
-                }
-            }
-        });
-
         return view;
 
     }

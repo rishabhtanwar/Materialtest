@@ -33,6 +33,7 @@ public  class MyFragment extends Fragment {
         return myFragment;
     }
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

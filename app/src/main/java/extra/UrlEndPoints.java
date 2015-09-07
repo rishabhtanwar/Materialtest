@@ -15,6 +15,10 @@ public class UrlEndPoints {
 
     public static final String URL_POSTER="http://image.tmdb.org/t/p/w500";
 
+    public static final String URL_AMPR="&";
+
+    public static final String URL_PAGE="page=";
+
 
 
 }
