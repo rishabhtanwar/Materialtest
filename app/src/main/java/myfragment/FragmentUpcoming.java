@@ -176,7 +176,7 @@ public class FragmentUpcoming extends Fragment implements SortListner {
 
                 JSONArray arrayMovies = response.getJSONArray(KEY_RESULTS);
 
-                for (int i = 0; i < arrayMovies.length(); i++) {
+                for (int i = 0; i < 3; i++) {
 
                     long id = -1;
 

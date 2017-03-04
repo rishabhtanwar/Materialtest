@@ -147,6 +147,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
     }
 
@@ -158,25 +159,25 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Toast.makeText(this, "setting is clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        if (id == R.id.navigate) {
-            Intent i = new Intent(this, sub_activity.class);
-            startActivity(i);
-
-        }
-        if (id == R.id.Tab_Using) {
-
-            Intent intent = new Intent(this, TabUsingLiabrary.class);
-            startActivity(intent);
-        }
-        if (id==R.id.video_view){
-
-            Intent intent=new Intent(this,VideoView.class);
-            startActivity(intent);
-        }
+        //if (id == R.id.action_settings) {
+        //    Toast.makeText(this, "setting is clicked", Toast.LENGTH_SHORT).show();
+        //    return true;
+        //}
+        //if (id == R.id.navigate) {
+        //    Intent i = new Intent(this, sub_activity.class);
+        //    startActivity(i);
+        //
+        //}
+        //if (id == R.id.Tab_Using) {
+        //
+        //    Intent intent = new Intent(this, TabUsingLiabrary.class);
+        //    startActivity(intent);
+        //}
+        //if (id==R.id.video_view){
+        //
+        //    Intent intent=new Intent(this,VideoView.class);
+        //    startActivity(intent);
+        //}
 
         return super.onOptionsItemSelected(item);
 
